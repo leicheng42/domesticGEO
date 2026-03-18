@@ -26,12 +26,19 @@ jobs:
 
       - name: Build release package
         run: |
-          tar \
+          rm -rf .release
+          mkdir -p .release/src
+
+          rsync -a \
             --exclude='.git' \
             --exclude='node_modules' \
             --exclude='data/site-data.json' \
-            --exclude='domesticGEO-release.tar.gz' \
-            -czf domesticGEO-release.tar.gz .
+            --exclude='.release' \
+            ./ .release/src/
+
+          tar \
+            -czf domesticGEO-release.tar.gz \
+            -C .release/src .
 
       - name: Upload package to server
         uses: appleboy/scp-action@v0.1.7
