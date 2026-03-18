@@ -79,6 +79,7 @@ APP_DIR=/www/wwwroot/domesticGEO BRANCH=main DATA_DIR=/www/wwwroot/domesticGEO-d
 
 - 当你 push 到 `main` 分支时自动部署
 - 也支持在 Actions 页面手动触发（`workflow_dispatch`）
+- 自动部署会由 GitHub Actions 直接上传代码到服务器，不依赖服务器 `git pull`
 
 ### 4. 宝塔反向代理
 

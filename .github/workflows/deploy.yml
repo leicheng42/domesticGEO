@@ -14,6 +14,28 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build release package
+        run: |
+          tar \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='data/site-data.json' \
+            -czf domesticGEO-release.tar.gz .
+
+      - name: Upload package to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          source: domesticGEO-release.tar.gz
+          target: /tmp
+
       - name: Run remote deploy script
         uses: appleboy/ssh-action@v1.2.2
         with:
@@ -26,6 +48,31 @@ jobs:
           command_timeout: 30m
           script: |
             set -e
-            cd /www/wwwroot/domesticGEO
+            APP_DIR=/www/wwwroot/domesticGEO
+            DATA_DIR=/www/wwwroot/domesticGEO-data
+            RELEASE_FILE=/tmp/domesticGEO-release.tar.gz
+            RELEASE_DIR=/tmp/domesticGEO-release
+            ENV_BAK=/tmp/domesticGEO-env-production.bak
+
+            mkdir -p "$APP_DIR" "$DATA_DIR"
+
+            if [ -f "$APP_DIR/.env.production" ]; then
+              cp "$APP_DIR/.env.production" "$ENV_BAK"
+            fi
+
+            rm -rf "$RELEASE_DIR"
+            mkdir -p "$RELEASE_DIR"
+            tar -xzf "$RELEASE_FILE" -C "$RELEASE_DIR"
+
+            find "$APP_DIR" -mindepth 1 -maxdepth 1 ! -name '.git' ! -name 'node_modules' -exec rm -rf {} +
+            cp -a "$RELEASE_DIR/." "$APP_DIR/"
+
+            if [ -f "$ENV_BAK" ]; then
+              mv "$ENV_BAK" "$APP_DIR/.env.production"
+            fi
+
+            cd "$APP_DIR"
             chmod +x deploy.sh
-            APP_DIR=/www/wwwroot/domesticGEO BRANCH=main DATA_DIR=/www/wwwroot/domesticGEO-data ./deploy.sh
+            APP_DIR="$APP_DIR" BRANCH=main DATA_DIR="$DATA_DIR" SKIP_GIT=1 ./deploy.sh
+
+            rm -rf "$RELEASE_DIR" "$RELEASE_FILE"
