@@ -17,6 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate required secrets
+        run: |
+          test -n "${{ secrets.DEPLOY_HOST }}" || (echo "Missing secret: DEPLOY_HOST" && exit 1)
+          test -n "${{ secrets.DEPLOY_PORT }}" || (echo "Missing secret: DEPLOY_PORT" && exit 1)
+          test -n "${{ secrets.DEPLOY_USER }}" || (echo "Missing secret: DEPLOY_USER" && exit 1)
+          test -n "${{ secrets.DEPLOY_PASSWORD }}" || (echo "Missing secret: DEPLOY_PASSWORD" && exit 1)
+
       - name: Build release package
         run: |
           tar \
@@ -31,7 +38,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
           source: domesticGEO-release.tar.gz
           target: /tmp
@@ -42,7 +48,6 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           port: ${{ secrets.DEPLOY_PORT }}
           username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
           password: ${{ secrets.DEPLOY_PASSWORD }}
           script_stop: true
           command_timeout: 30m
