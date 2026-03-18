@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>表单线索</title>
+  <style>
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: #e2e8f0; padding: 20px; }
+    .side h2 { margin: 0 0 20px; font-size: 18px; }
+    .side a { display: block; color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+    .side a.active, .side a:hover { background: #1e293b; color: #fff; }
+    .main { padding: 24px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+    th, td { text-align: left; border-bottom: 1px solid #e2e8f0; padding: 10px; font-size: 13px; vertical-align: top; }
+    th { background: #f8fafc; color: #334155; }
+    .msg { max-width: 340px; white-space: pre-wrap; color: #334155; }
+    .muted { color: #64748b; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <h2>domesticGEO 后台</h2>
+      <a href="/admin">概览</a>
+      <a href="/admin/brand">品牌配置</a>
+      <a href="/admin/posts">文章管理</a>
+      <a class="active" href="/admin/submissions">表单线索</a>
+    </aside>
+    <main class="main">
+      <h1>表单线索</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>姓名</th>
+            <th>公司</th>
+            <th>电话</th>
+            <th>职位</th>
+            <th>来源</th>
+            <th>需求</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!submissions.length) { %>
+            <tr><td colspan="7" class="muted">暂无线索数据，等待前台表单提交。</td></tr>
+          <% } %>
+          <% submissions.forEach(function(item){ %>
+            <tr>
+              <td><%= formatDatetime(item.createdAt) %></td>
+              <td><%= item.name %></td>
+              <td><%= item.company %></td>
+              <td><%= item.phone %></td>
+              <td><%= item.position || "-" %></td>
+              <td><%= item.source || "-" %></td>
+              <td><div class="msg"><%= item.message || "-" %></div></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>

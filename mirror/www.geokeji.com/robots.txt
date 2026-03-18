@@ -1,0 +1,14 @@
+# SEO & GEO (AI Search) Optimized
+User-agent: *
+Allow: /
+Allow: /sitemap.xml
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /*.json
+Disallow: /api/
+Disallow: /admin/
+Disallow: /images/clients/
+Disallow: /images/clients-optimized/
+
+Sitemap: https://www.geokeji.com/sitemap.xml
+Host: https://www.geokeji.com

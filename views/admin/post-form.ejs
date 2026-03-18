@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= isNew ? "新建文章" : "编辑文章" %></title>
+  <style>
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: #e2e8f0; padding: 20px; }
+    .side h2 { margin: 0 0 20px; font-size: 18px; }
+    .side a { display: block; color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+    .side a.active, .side a:hover { background: #1e293b; color: #fff; }
+    .main { padding: 24px; }
+    .actions { margin-bottom: 12px; }
+    .actions a { color: #1d4ed8; text-decoration: none; }
+    .form { max-width: 900px; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .full { grid-column: 1 / -1; }
+    label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 14px; }
+    textarea { min-height: 300px; resize: vertical; }
+    button { margin-top: 14px; border: none; background: #2563eb; color: #fff; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .hint { color: #64748b; font-size: 12px; margin-top: 6px; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <h2>domesticGEO 后台</h2>
+      <a href="/admin">概览</a>
+      <a href="/admin/brand">品牌配置</a>
+      <a class="active" href="/admin/posts">文章管理</a>
+      <a href="/admin/submissions">表单线索</a>
+    </aside>
+    <main class="main">
+      <div class="actions"><a href="/admin/posts">← 返回文章列表</a></div>
+      <h1><%= isNew ? "新建文章" : "编辑文章" %></h1>
+      <form class="form" method="post" action="<%= isNew ? '/admin/posts/new' : '/admin/posts/' + post.id + '/edit' %>">
+        <div class="grid">
+          <div class="full">
+            <label>文章标题</label>
+            <input required name="title" value="<%= post.title %>" />
+          </div>
+          <div>
+            <label>文章 Slug（用于访问路径）</label>
+            <input name="slug" value="<%= post.slug %>" />
+            <div class="hint">留空将根据标题自动生成。</div>
+          </div>
+          <div>
+            <label>状态</label>
+            <select name="status">
+              <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>草稿</option>
+              <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>发布</option>
+            </select>
+          </div>
+          <div class="full">
+            <label>封面图 URL</label>
+            <input name="coverUrl" value="<%= post.coverUrl %>" placeholder="/covers/your-cover.webp" />
+          </div>
+          <div class="full">
+            <label>摘要</label>
+            <textarea name="excerpt" style="min-height: 120px;"><%= post.excerpt %></textarea>
+          </div>
+          <div class="full">
+            <label>正文内容</label>
+            <textarea name="content"><%= post.content %></textarea>
+            <div class="hint">支持纯文本段落（空行分段）。</div>
+          </div>
+        </div>
+        <button type="submit">保存文章</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

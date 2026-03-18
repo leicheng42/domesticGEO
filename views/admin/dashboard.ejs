@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>后台概览</title>
+  <style>
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: #e2e8f0; padding: 20px; }
+    .side h2 { margin: 0 0 20px; font-size: 18px; }
+    .side a { display: block; color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+    .side a.active, .side a:hover { background: #1e293b; color: #fff; }
+    .main { padding: 24px; }
+    .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; }
+    .label { font-size: 13px; color: #64748b; }
+    .value { margin-top: 8px; font-size: 28px; font-weight: 800; }
+    .block { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin-top: 16px; }
+    .muted { color: #64748b; }
+    form button { border: none; background: #ef4444; color: #fff; border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <h2>domesticGEO 后台</h2>
+      <a class="active" href="/admin">概览</a>
+      <a href="/admin/brand">品牌配置</a>
+      <a href="/admin/posts">文章管理</a>
+      <a href="/admin/submissions">表单线索</a>
+    </aside>
+    <main class="main">
+      <div class="top">
+        <h1>后台概览</h1>
+        <form method="post" action="/admin/logout">
+          <button type="submit">退出登录</button>
+        </form>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="label">文章总数</div>
+          <div class="value"><%= stats.postCount %></div>
+        </div>
+        <div class="card">
+          <div class="label">已发布文章</div>
+          <div class="value"><%= stats.publishedCount %></div>
+        </div>
+        <div class="card">
+          <div class="label">表单线索</div>
+          <div class="value"><%= stats.submissionCount %></div>
+        </div>
+      </div>
+      <div class="block">
+        <h3>最新线索</h3>
+        <% if (stats.latestSubmission) { %>
+          <p>姓名：<strong><%= stats.latestSubmission.name %></strong></p>
+          <p>公司：<%= stats.latestSubmission.company %></p>
+          <p>电话：<%= stats.latestSubmission.phone %></p>
+          <p>时间：<%= formatDatetime(stats.latestSubmission.createdAt) %></p>
+        <% } else { %>
+          <p class="muted">暂无线索数据。</p>
+        <% } %>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

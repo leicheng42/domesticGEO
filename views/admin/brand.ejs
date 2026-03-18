@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>品牌配置</title>
+  <style>
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: #e2e8f0; padding: 20px; }
+    .side h2 { margin: 0 0 20px; font-size: 18px; }
+    .side a { display: block; color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+    .side a.active, .side a:hover { background: #1e293b; color: #fff; }
+    .main { padding: 24px; }
+    .form { max-width: 860px; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; }
+    input, textarea { width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px; font-size: 14px; }
+    textarea { min-height: 80px; resize: vertical; }
+    .full { grid-column: 1 / -1; }
+    button { margin-top: 14px; border: none; background: #2563eb; color: #fff; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .ok { margin-bottom: 10px; color: #166534; background: #dcfce7; border-radius: 8px; padding: 8px 10px; font-size: 13px; display: inline-block; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <h2>domesticGEO 后台</h2>
+      <a href="/admin">概览</a>
+      <a class="active" href="/admin/brand">品牌配置</a>
+      <a href="/admin/posts">文章管理</a>
+      <a href="/admin/submissions">表单线索</a>
+    </aside>
+    <main class="main">
+      <h1>品牌配置（贴牌）</h1>
+      <% if (saved) { %><div class="ok">保存成功，前台刷新后立即生效。</div><% } %>
+      <form class="form" method="post" action="/admin/brand">
+        <div class="grid">
+          <div>
+            <label>品牌简称</label>
+            <input name="shortName" value="<%= brand.shortName %>" />
+          </div>
+          <div>
+            <label>公司全称</label>
+            <input name="fullName" value="<%= brand.fullName %>" />
+          </div>
+          <div class="full">
+            <label>品牌口号</label>
+            <input name="slogan" value="<%= brand.slogan %>" />
+          </div>
+          <div class="full">
+            <label>Logo URL（建议绝对路径或站内路径）</label>
+            <input name="logoUrl" value="<%= brand.logoUrl %>" />
+          </div>
+          <div>
+            <label>客服电话</label>
+            <input name="phone" value="<%= brand.phone %>" />
+          </div>
+          <div>
+            <label>联系邮箱</label>
+            <input name="email" value="<%= brand.email %>" />
+          </div>
+          <div class="full">
+            <label>北京地址</label>
+            <input name="beijingAddress" value="<%= brand.beijingAddress %>" />
+          </div>
+          <div class="full">
+            <label>西安地址</label>
+            <input name="xianAddress" value="<%= brand.xianAddress %>" />
+          </div>
+          <div class="full">
+            <label>页脚版权文案</label>
+            <input name="footerCopyright" value="<%= brand.footerCopyright %>" />
+          </div>
+        </div>
+        <button type="submit">保存配置</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

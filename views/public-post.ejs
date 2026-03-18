@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= post.title %> | <%= brand.shortName %></title>
+  <meta name="description" content="<%= post.excerpt %>" />
+  <link rel="stylesheet" href="/_next/static/css/ae096125b93ad735.css" />
+</head>
+<body class="bg-[#F7FAFC] text-slate-900">
+  <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+    <div class="mx-auto px-3 xs:px-4 sm:px-6 lg:px-12 xl:px-16 max-w-7xl">
+      <div class="h-20 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <img src="<%= brand.logoUrl %>" alt="<%= brand.shortName %>" class="h-8 w-auto" />
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+          <a href="/">首页</a>
+          <a href="/blog">观点洞察</a>
+          <a href="/contact">联系我们</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <main class="pt-28 pb-16">
+    <div class="mx-auto px-3 xs:px-4 sm:px-6 lg:px-12 xl:px-16 max-w-4xl">
+      <article class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+        <% if (post.coverUrl) { %>
+          <div class="h-72 bg-slate-100">
+            <img src="<%= post.coverUrl %>" alt="<%= post.title %>" class="w-full h-full object-cover" />
+          </div>
+        <% } %>
+        <div class="p-8 md:p-12">
+          <div class="text-sm text-slate-500 mb-3">后台发布 · <%= formatDatetime(post.publishedAt || post.updatedAt) %></div>
+          <h1 class="text-3xl md:text-4xl font-black leading-tight text-slate-900 mb-4"><%= post.title %></h1>
+          <% if (post.excerpt) { %>
+            <p class="text-lg text-slate-600 mb-8"><%= post.excerpt %></p>
+          <% } %>
+          <div class="prose prose-slate max-w-none">
+            <%- post.contentHtml %>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+  <script src="/runtime/site-runtime.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>文章管理</title>
+  <style>
+    body { margin: 0; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #0f172a; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .side { background: #0f172a; color: #e2e8f0; padding: 20px; }
+    .side h2 { margin: 0 0 20px; font-size: 18px; }
+    .side a { display: block; color: #cbd5e1; text-decoration: none; padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; }
+    .side a.active, .side a:hover { background: #1e293b; color: #fff; }
+    .main { padding: 24px; }
+    .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; gap: 10px; }
+    .btn { display: inline-block; text-decoration: none; border: none; background: #2563eb; color: #fff; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .ok { margin-bottom: 10px; color: #166534; background: #dcfce7; border-radius: 8px; padding: 8px 10px; font-size: 13px; display: inline-block; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+    th, td { text-align: left; border-bottom: 1px solid #e2e8f0; padding: 10px; font-size: 13px; vertical-align: top; }
+    th { background: #f8fafc; color: #334155; }
+    .status { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+    .published { background: #dcfce7; color: #166534; }
+    .draft { background: #fee2e2; color: #9f1239; }
+    .static { background: #e2e8f0; color: #334155; }
+    .source-tag { display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 12px; background: #eef2ff; color: #3730a3; margin-left: 6px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .link { color: #1d4ed8; text-decoration: none; }
+    .danger { border: none; background: #ef4444; color: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+    .secondary { border: none; background: #334155; color: #fff; border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+    @media (max-width: 920px) {
+      .layout { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="side">
+      <h2>domesticGEO 后台</h2>
+      <a href="/admin">概览</a>
+      <a href="/admin/brand">品牌配置</a>
+      <a class="active" href="/admin/posts">文章管理</a>
+      <a href="/admin/submissions">表单线索</a>
+    </aside>
+    <main class="main">
+      <div class="top">
+        <h1>文章管理</h1>
+        <a class="btn" href="/admin/posts/new">+ 新建文章</a>
+      </div>
+      <% if (saved) { %><div class="ok">文章已保存。</div><% } %>
+      <% if (deleted) { %><div class="ok">文章已删除。</div><% } %>
+      <% if (imported) { %><div class="ok">静态文章已导入后台，可继续编辑发布。</div><% } %>
+      <table>
+        <thead>
+          <tr>
+            <th>标题</th>
+            <th>Slug</th>
+            <th>状态</th>
+            <th>更新时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!posts.length) { %>
+            <tr><td colspan="5">暂无文章，点击右上角新建。</td></tr>
+          <% } %>
+          <% posts.forEach(function(post){ %>
+            <tr>
+              <td><strong><%= post.title %></strong><br/><span style="color:#64748b;"><%= post.excerpt || "" %></span></td>
+              <td><code><%= post.slug %></code></td>
+              <td>
+                <span class="status <%= post.status === 'published' ? 'published' : 'draft' %>">
+                  <%= post.status === "published" ? "已发布" : "草稿" %>
+                </span>
+                <span class="source-tag"><%= post.source === "static" ? "官网已有" : "后台文章" %></span>
+              </td>
+              <td><%= formatDatetime(post.updatedAt) %></td>
+              <td>
+                <div class="actions">
+                  <% if (post.source === "static") { %>
+                    <form method="post" action="/admin/posts/import/<%= post.slug %>">
+                      <button class="secondary" type="submit">导入到后台</button>
+                    </form>
+                    <a class="link" href="/blog/<%= post.slug %>" target="_blank">查看</a>
+                  <% } else { %>
+                    <a class="link" href="/admin/posts/<%= post.id %>/edit">编辑</a>
+                    <% if (post.status === "published") { %>
+                      <a class="link" href="/blog/<%= post.slug %>" target="_blank">预览</a>
+                    <% } %>
+                    <form method="post" action="/admin/posts/<%= post.id %>/delete" onsubmit="return confirm('确认删除这篇文章吗？')">
+                      <button class="danger" type="submit">删除</button>
+                    </form>
+                  <% } %>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>
