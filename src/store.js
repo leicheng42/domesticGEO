@@ -2,7 +2,8 @@ const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 
-const DATA_FILE = path.join(__dirname, "..", "data", "site-data.json");
+const DEFAULT_DATA_FILE = path.join(__dirname, "..", "data", "site-data.json");
+const DATA_FILE = path.resolve(process.env.DATA_FILE || DEFAULT_DATA_FILE);
 
 const DEFAULT_DATA = {
   brand: {

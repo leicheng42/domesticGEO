@@ -1,0 +1,31 @@
+name: Deploy to BaoTa
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: baota-prod-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run remote deploy script
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          password: ${{ secrets.DEPLOY_PASSWORD }}
+          script_stop: true
+          command_timeout: 30m
+          script: |
+            set -e
+            cd /www/wwwroot/domesticGEO
+            chmod +x deploy.sh
+            APP_DIR=/www/wwwroot/domesticGEO BRANCH=main DATA_DIR=/www/wwwroot/domesticGEO-data ./deploy.sh
